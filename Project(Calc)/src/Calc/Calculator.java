@@ -18,20 +18,20 @@ import javax.swing.JPanel;
 
 public class Calculator extends JFrame implements ActionListener, KeyListener {
 	final int MAX_INPUT_LENGTH = 20;
-	
+	//각 모드별로 index를 부여
 	final int INPUT_MODE =0;	
 	final int RESULT_MODE =1;	
 	final int ERROR_MODE =2;	
 	int displayMode;
 	
-	boolean clearOnNextDigit;
+	boolean clearOnNextDigit; //화면에 표시될 숫자를 지울지 결정하는 객체
 	
-	double lastNumber;
-	String lastOperator;
+	double lastNumber; //마지막에 기억될 수
+	String lastOperator; // 마지막에 누른 연산자를 기억.
 	
-	private JLabel output;
-	private JButton buttons[];
-	private JPanel masterPanel, btnPanel, ctrPanel;
+	private JLabel output; //숫자가 표시될 공간
+	private JButton buttons[]; //각 버튼을 배열로 생성
+	private JPanel masterPanel, btnPanel, ctrPanel; //버튼과 레이블을 배치할 공간
 	
 	public Calculator() {
 		
@@ -46,10 +46,11 @@ public class Calculator extends JFrame implements ActionListener, KeyListener {
 		buttons = new JButton[23];
 		btnPanel = new JPanel();
 		
+		//숫자 버튼 생성(0~9)
 		for (int i=0 ; i <= 9 ; i ++) {
 			buttons[i] = new JButton(String.valueOf(i));
 		}
-		
+		// 연산 버튼 생성
 		  buttons[10] = new JButton("±");
 		  buttons[11] = new JButton(".");
 		  buttons[12] = new JButton("=");
@@ -60,7 +61,7 @@ public class Calculator extends JFrame implements ActionListener, KeyListener {
 		  buttons[17] = new JButton("√");
 		  buttons[18] = new JButton("1/x");
 		  buttons[19] = new JButton("%");
-		  
+		//컨트롤 버튼
 		  buttons[20] = new JButton("←");
 		  buttons[21] = new JButton("CE");
 		  buttons[22] = new JButton("C");
@@ -74,7 +75,7 @@ public class Calculator extends JFrame implements ActionListener, KeyListener {
 				  buttons[i].setForeground(Color.red);
 			  }
 		  }
-		  
+		//패널에 숫자버튼, 연산자 버튼 배치
 		  btnPanel.setLayout(new GridLayout(4,5,2,2));
 		  
 		  for(int i=7;i<=9;i++) {
@@ -102,14 +103,14 @@ public class Calculator extends JFrame implements ActionListener, KeyListener {
 		  btnPanel.add(buttons[16]); // +
 		  btnPanel.add(buttons[12]); // =
 		  
-		  
+		//컨트롤 패널에 컨트롤 버튼 배치
 		  ctrPanel = new JPanel();
 		  ctrPanel.setLayout(new GridLayout(1,2,2,2));
 		  
 		  ctrPanel.add(buttons[20]);
 		  ctrPanel.add(buttons[21]);
 		  ctrPanel.add(buttons[22]);
-		  
+		// 각 컴포넌트를 프레임에 추가
 		  masterPanel.setLayout(new BorderLayout());
 		  masterPanel.add(ctrPanel, BorderLayout.NORTH);
 		  masterPanel.add(btnPanel, BorderLayout.SOUTH);
@@ -118,12 +119,13 @@ public class Calculator extends JFrame implements ActionListener, KeyListener {
 		  getContentPane().add(masterPanel, BorderLayout.SOUTH);
 		  requestFocus();
 		  
+		//버튼 ActionListener, Keylistener 활성화
 		  for(int i=0; i<buttons.length ; i++) {
 			  buttons[i].addActionListener(this);
 			  buttons[i].addKeyListener(this);
 		  }
 		  
-		  clearAll();
+		  clearAll(); // 모든 값 초기화
 		  
 		  addWindowListener(new WindowAdapter() {
 			  public void windowClosing(WindowEvent e) {
@@ -132,8 +134,9 @@ public class Calculator extends JFrame implements ActionListener, KeyListener {
 		}
 		);
 	}
-//생성자 끝
+// 이상 생성자 생성
 	
+	//마우스 입력에 대한 동작
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
@@ -146,10 +149,10 @@ public class Calculator extends JFrame implements ActionListener, KeyListener {
 					break;
 				}else {
 					switch(i) {
-					case 10:
+					case 10: // ±
 						processSingChange();
 						break;
-					case 11:
+					case 11: // .
 						addPoint();
 						break;
 					case 12:
@@ -167,7 +170,7 @@ public class Calculator extends JFrame implements ActionListener, KeyListener {
 				      case 16: // +
 				       processOperator("+");
 				       break;
-				      case 17:
+				      case 17: // √
 				    	  if(displayMode != ERROR_MODE) {
 				    		  try {
 								if (getDisplayString().indexOf("-")==0)
@@ -181,7 +184,7 @@ public class Calculator extends JFrame implements ActionListener, KeyListener {
 							}
 				    	  }
 				    	  break;
-				      case 18:
+				      case 18: // 1/x
 				    	  if (displayMode != ERROR_MODE) {
 							try {
 								if (getNumberInDisplay() == 0) {
@@ -195,7 +198,7 @@ public class Calculator extends JFrame implements ActionListener, KeyListener {
 							}
 						}
 				    	  break;
-				      case 19:
+				      case 19: // %(백분율)
 				    	  if (displayMode != ERROR_MODE){
 			    	        try {
 			    	         result = getNumberInDisplay() / 100;
@@ -208,15 +211,15 @@ public class Calculator extends JFrame implements ActionListener, KeyListener {
 			    	        }
 			    	       }
 			    	       break;
-				      case 20:
+				      case 20: // ←
 				    	  backspace();
 				    	  break;
-				      case 21:
+				      case 21: //CE
 				    	  setDisplayString("0");
 				    	  clearOnNextDigit = true;
 				    	  displayMode = INPUT_MODE;
 				    	  break;
-				      case 22:
+				      case 22: //C
 				    	  clearAll();
 				    	  break;
 					}
@@ -226,7 +229,7 @@ public class Calculator extends JFrame implements ActionListener, KeyListener {
 		}
 	}	
 
-
+	//키보드 입력에 대한 동작
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int keycode = e.getKeyChar();
@@ -359,7 +362,7 @@ public class Calculator extends JFrame implements ActionListener, KeyListener {
 		if (clearOnNextDigit) 
 			setDisplayString("");
 		String inputString = getDisplayString();
-		
+		// 이미 점이 찍혀 있으면 안 찍음.
 		if (inputString.indexOf(".") < 0) 
 			setDisplayString(new String(inputString + "."));
 	}
@@ -419,7 +422,7 @@ public class Calculator extends JFrame implements ActionListener, KeyListener {
 	public static void main(String args[]) {
 		Calculator cal = new Calculator();
 		cal.setTitle("Calculator");
-		cal.setSize(500,500);
+		cal.setSize(300,300);
 		cal.pack();
 		cal.setVisible(true);
 		cal.setResizable(true);
