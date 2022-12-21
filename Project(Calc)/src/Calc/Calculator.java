@@ -188,7 +188,7 @@ public class Calculator extends JFrame implements ActionListener, KeyListener {
 				    	  if (displayMode != ERROR_MODE) {
 							try {
 								if (getNumberInDisplay() == 0) {
-									displayError("영으로 나눌 수 없습니다.");
+									displayError("영으로 나눌 수 없습니다."); // 0 입력 후 작동하면 메시지 뜸
 									result = 1 / getNumberInDisplay();
 									displayResult(result);
 								}
