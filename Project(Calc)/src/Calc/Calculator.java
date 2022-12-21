@@ -2,6 +2,7 @@ package Calc;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -418,12 +419,13 @@ public class Calculator extends JFrame implements ActionListener, KeyListener {
 	public static void main(String args[]) {
 		Calculator cal = new Calculator();
 		cal.setTitle("Calculator");
-		cal.setSize(300,300);
+		cal.setSize(500,500);
 		cal.pack();
 		cal.setVisible(true);
-		cal.setResizable(false);
+		cal.setResizable(true);
 	}
 	
+
 	@Override
 	public void keyReleased(KeyEvent e) {}
 	@Override
